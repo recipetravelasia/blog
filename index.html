@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Travel Asia</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin:0; background:#fffaf0; color:#333; line-height:1.7; }
+        header {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url('https://picsum.photos/id/1015/2000/800');
+            background-size: cover;
+            color: white;
+            text-align: center;
+            padding: 120px 20px 80px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .nav {
+            display: flex; justify-content: space-between; align-items: center; margin: 20px 0; flex-wrap: wrap; gap: 15px;
+        }
+        .search {
+            padding: 14px 20px; width: 380px; border-radius: 50px; border: 1px solid #ddd;
+        }
+        .blog-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 25px;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+        .card:hover { transform: translateY(-8px); }
+        .card img { width: 100%; height: 220px; object-fit: cover; }
+        .card-content { padding: 20px; }
+        .post-content {
+            display: none; max-width: 900px; margin: 40px auto;
+            background: white; padding: 50px; border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .post-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Recipe Travel Asia</h1>
+        <p>Discover Authentic Asian Recipes & Travel Adventures</p>
+    </header>
+
+    <div class="container">
+        <div class="nav">
+            <button onclick="showHome()" style="padding:12px 20px;">← Home</button>
+            <input type="text" id="searchInput" class="search" placeholder="Search recipes or destinations..." onkeyup="searchPosts()">
+        </div>
+
+        <div id="blogList" class="blog-list"></div>
+        <div id="postContent" class="post-content"></div>
+    </div>
+
+    <script>
+        // ==================== 100 POSTS GENERATED ====================
+        const posts = [];
+        const countries = ["Thailand", "Japan", "Vietnam", "India", "Malaysia", "Indonesia", "Korea", "Taiwan", "China", "Singapore"];
+        const categories = ["Recipe", "Street Food", "Travel Guide", "Hidden Gems", "Food Culture"];
+
+        const baseTitles = [
+            "Best Street Food in", "Authentic Recipe from", "Hidden Food Gems in",
+            "Must Try Dishes in", "Complete Travel Food Guide to", "How to Make"
+        ];
+
+        for (let i = 1; i <= 100; i++) {
+            const country = countries[i % countries.length];
+            const titleBase = baseTitles[i % baseTitles.length];
+            posts.push({
+                id: i,
+                title: `${titleBase} ${country}`,
+                date: `May ${((i-1) % 25) + 1}, 2026`,
+                category: categories[i % categories.length],
+                image: `https://picsum.photos/id/${100 + (i % 80)}/800/400`,
+                excerpt: `Delicious ${country} food experience you must try.`,
+                content: `
+                    <h1>${titleBase} ${country}</h1>
+                    <p><strong>Published: May ${((i-1)%25)+1}, 2026</strong></p>
+                    <p>This is post #${i}. You can replace this content with detailed recipe or travel story.</p>
+                    <p>Enjoy the rich flavors and culture of ${country}!</p>
+                `
+            });
+        }
+        // ============================================================
+
+        function renderPosts(filteredPosts) {
+            const container = document.getElementById('blogList');
+            container.innerHTML = '';
+
+            filteredPosts.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="${post.image}" alt="${post.title}">
+                    <div class="card-content">
+                        <small>${post.date} • ${post.category}</small>
+                        <h3>${post.title}</h3>
+                        <p>${post.excerpt}</p>
+                        <button onclick="readPost(${post.id})" style="margin-top:12px; padding:10px 20px; background:#e63939; color:white; border:none; border-radius:50px; cursor:pointer;">
+                            Read Full Post →
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function readPost(id) {
+            const post = posts.find(p => p.id === id);
+            document.getElementById('blogList').style.display = 'none';
+            document.getElementById('postContent').innerHTML = `
+                <button onclick="showHome()" style="margin-bottom:25px; padding:12px 25px;">← Back to All Posts</button>
+                ${post.content}
+            `;
+            document.getElementById('postContent').classList.add('active');
+        }
+
+        function showHome() {
+            document.getElementById('blogList').style.display = 'grid';
+            document.getElementById('postContent').classList.remove('active');
+        }
+
+        function searchPosts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = posts.filter(p => 
+                p.title.toLowerCase().includes(query) || 
+                p.excerpt.toLowerCase().includes(query)
+            );
+            renderPosts(filtered);
+        }
+
+        // Initialize
+        window.onload = () => renderPosts(posts);
+    </script>
+</body>
+</html>
